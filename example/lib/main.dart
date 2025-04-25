@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: _deleteAll,
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
                     child: const Text('Delete All'),
                   ),
                   const SizedBox(height: 24),
