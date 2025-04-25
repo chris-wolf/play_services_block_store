@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _status = '';
   String _retrievedString = '';
-  String _retrievedBytes = '';
+  Uint8List _retrievedBytes =Uint8List(0);
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _saveString() async {
-    await PlayServicesBlockStore.saveString('exampleKey', 'Hello Block Store!');
+    await PlayServicesBlockStore.saveString('exampleKey', 'Hello saved as String');
     setState(() {
       _status = 'String saved';
     });
@@ -42,18 +42,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _saveBytes() async {
-    final bytes = Uint8List.fromList([1, 2, 3, 4, 5]);
-    final base64 = base64Encode(bytes);
-    await PlayServicesBlockStore.saveBytes('byteKey', base64);
+    final bytes = Uint8List.fromList(utf8.encode('Hello as bytes'));
+    await PlayServicesBlockStore.saveBytes('byteKey', bytes);
     setState(() {
       _status = 'Bytes saved';
     });
   }
 
-  Future<void> _retrieveBytes() async {
-    final base64 = await PlayServicesBlockStore.retrieveBytes('byteKey');
+  Future<void> _retrieveBytes() async  {
+    final byteData = await  PlayServicesBlockStore.retrieveBytes('byteKey');
     setState(() {
-      _retrievedBytes = base64 ?? 'No bytes found';
+      _retrievedBytes = byteData ?? Uint8List(0);
       _status = 'Bytes retrieved';
     });
   }
@@ -62,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     await PlayServicesBlockStore.deleteAll();
     setState(() {
       _retrievedString = '';
-      _retrievedBytes = '';
+      _retrievedBytes = Uint8List(0);
       _status = 'All data deleted';
     });
   }
@@ -102,7 +101,7 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(onPressed: _retrieveBytes, child: const Text('Retrieve Bytes')),
                 ]
               ),
-                  Text('Retrieved Base64 Bytes: $_retrievedBytes'),
+                  Text('Retrieved Base64 Bytes: ${utf8.decode(_retrievedBytes)}'),
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: _deleteAll,

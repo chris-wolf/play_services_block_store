@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'play_services_block_store_method_channel.dart';
@@ -27,7 +29,7 @@ abstract class PlayServicesBlockStorePlatform extends PlatformInterface {
     throw UnimplementedError('saveString() has not been implemented.');
   }
 
-  Future<void> saveBytes(String key, String base64Value) {
+  static Future<void> saveBytes(String key, Uint8List bytes) {
     throw UnimplementedError('saveBytes() has not been implemented.');
   }
 

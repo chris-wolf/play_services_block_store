@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'play_services_block_store_platform_interface.dart';
 
 class PlayServicesBlockStore {
@@ -5,16 +8,20 @@ class PlayServicesBlockStore {
     return PlayServicesBlockStorePlatform.instance.saveString(key, value);
   }
 
-  static Future<void> saveBytes(String key, String base64Value) {
-    return PlayServicesBlockStorePlatform.instance.saveBytes(key, base64Value);
+  static Future<void> saveBytes(String key, Uint8List bytes) {
+    return PlayServicesBlockStorePlatform.instance.saveString(key, base64Encode(bytes as List<int>));
   }
 
   static Future<String?> retrieveString(String key) {
     return PlayServicesBlockStorePlatform.instance.retrieveString(key);
   }
 
-  static Future<String?> retrieveBytes(String key) {
-    return PlayServicesBlockStorePlatform.instance.retrieveBytes(key);
+  static Future<Uint8List?> retrieveBytes(String key) async {
+   final base64String = await PlayServicesBlockStorePlatform.instance.retrieveBytes(key);
+   if (base64String == null) {
+     return null;
+   }
+    return base64Decode(base64String);
   }
 
   static Future<Map<String, String>> retrieveAll() {

@@ -19,10 +19,10 @@ class MethodChannelPlayServicesBlockStore extends PlayServicesBlockStorePlatform
   }
 
   @override
-  Future<void> saveBytes(String key, String base64Value) async {
+  Future<void> saveBytes(String key, Uint8List data) async {
     await methodChannel.invokeMethod('saveBytes', {
       'key': key,
-      'value': base64Value,
+      'value': data,
     });
   }
 

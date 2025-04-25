@@ -52,16 +52,15 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
     saveData(key, value.toByteArray(), result)
   }
 
-  private fun saveBytes(call: MethodCall, result: Result) {
-    val key = call.argument<String>("key")
-    val base64Value = call.argument<String>("value") // Expecting base64-encoded bytes
-    if (key == null || base64Value == null) {
-      result.error("INVALID_ARGS", "Missing key or base64 value", null)
-      return
+    private fun saveBytes(call: MethodCall, result: Result) {
+        val key = call.argument<String>("key")
+        val byteValue = call.argument<ByteArray>("value") // Now directly a byte array from Uint8List
+        if (key == null || byteValue == null) {
+            result.error("INVALID_ARGS", "Missing key or byte value", null)
+            return
+        }
+        saveData(key, byteValue, result)
     }
-    val bytes = Base64.decode(base64Value, Base64.DEFAULT)
-    saveData(key, bytes, result)
-  }
 
   private fun saveData(key: String, data: ByteArray, result: Result) {
     val request = StoreBytesData.Builder()
