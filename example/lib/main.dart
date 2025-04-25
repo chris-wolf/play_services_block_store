@@ -17,7 +17,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _blockStore = PlayServicesBlockStore();
   String _status = '';
   String _retrievedString = '';
   String _retrievedBytes = '';
@@ -28,14 +27,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _saveString() async {
-    await _blockStore.saveString('exampleKey', 'Hello Block Store!');
+    await PlayServicesBlockStore.saveString('exampleKey', 'Hello Block Store!');
     setState(() {
       _status = 'String saved';
     });
   }
 
   Future<void> _retrieveString() async {
-    final value = await _blockStore.retrieveString('exampleKey');
+    final value = await PlayServicesBlockStore.retrieveString('exampleKey');
     setState(() {
       _retrievedString = value ?? 'No value found';
       _status = 'String retrieved';
@@ -45,14 +44,14 @@ class _MyAppState extends State<MyApp> {
   Future<void> _saveBytes() async {
     final bytes = Uint8List.fromList([1, 2, 3, 4, 5]);
     final base64 = base64Encode(bytes);
-    await _blockStore.saveBytes('byteKey', base64);
+    await PlayServicesBlockStore.saveBytes('byteKey', base64);
     setState(() {
       _status = 'Bytes saved';
     });
   }
 
   Future<void> _retrieveBytes() async {
-    final base64 = await _blockStore.retrieveBytes('byteKey');
+    final base64 = await PlayServicesBlockStore.retrieveBytes('byteKey');
     setState(() {
       _retrievedBytes = base64 ?? 'No bytes found';
       _status = 'Bytes retrieved';
@@ -60,7 +59,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _deleteAll() async {
-    await _blockStore.deleteAll();
+    await PlayServicesBlockStore.deleteAll();
     setState(() {
       _retrievedString = '';
       _retrievedBytes = '';

@@ -40,27 +40,25 @@ flutter pub get
 ```dart
 import 'package:play_services_block_store/play_services_block_store.dart';
 
-final store = PlayServicesBlockStore();
-
 // Save a string
-await store.saveString('username', 'alice');
+await PlayServicesBlockStore.saveString('username', 'alice');
 
 // Retrieve a string
-final username = await store.retrieveString('username');
+final username = await PlayServicesBlockStore.retrieveString('username');
 
 // Save base64-encoded bytes
 final base64Data = base64Encode([1, 2, 3, 4]);
-await store.saveBytes('my_bytes', base64Data);
+await PlayServicesBlockStore.saveBytes('my_bytes', base64Data);
 
 // Retrieve base64-encoded bytes
-final encoded = await store.retrieveBytes('my_bytes');
+final encoded = await PlayServicesBlockStore.retrieveBytes('my_bytes');
 
 // Retrieve all stored values
-final allData = await store.retrieveAll();
+final allData = await PlayServicesBlockStore.retrieveAll();
 
 // Delete a single key
-await store.delete('username');
+await PlayServicesBlockStore.delete('username');
 
 // Delete all stored data
-await store.deleteAll();
+await PlayServicesBlockStore.deleteAll();
 ```
