@@ -23,7 +23,31 @@ abstract class PlayServicesBlockStorePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<void> saveString(String key, String value) {
+    throw UnimplementedError('saveString() has not been implemented.');
+  }
+
+  Future<void> saveBytes(String key, String base64Value) {
+    throw UnimplementedError('saveBytes() has not been implemented.');
+  }
+
+  Future<String?> retrieveString(String key) {
+    throw UnimplementedError('retrieveString() has not been implemented.');
+  }
+
+  Future<String?> retrieveBytes(String key) {
+    throw UnimplementedError('retrieveBytes() has not been implemented.');
+  }
+
+  Future<Map<String, String>> retrieveAll() {
+    throw UnimplementedError('retrieveAll() has not been implemented.');
+  }
+
+  Future<void> delete(String key) {
+    throw UnimplementedError('delete() has not been implemented.');
+  }
+
+  Future<void> deleteAll() {
+    throw UnimplementedError('deleteAll() has not been implemented.');
   }
 }

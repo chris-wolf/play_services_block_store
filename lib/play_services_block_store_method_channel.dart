@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
 import 'play_services_block_store_platform_interface.dart';
 
 /// An implementation of [PlayServicesBlockStorePlatform] that uses method channels.
@@ -10,8 +11,52 @@ class MethodChannelPlayServicesBlockStore extends PlayServicesBlockStorePlatform
   final methodChannel = const MethodChannel('play_services_block_store');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<void> saveString(String key, String value) async {
+    await methodChannel.invokeMethod('saveString', {
+      'key': key,
+      'value': value,
+    });
+  }
+
+  @override
+  Future<void> saveBytes(String key, String base64Value) async {
+    await methodChannel.invokeMethod('saveBytes', {
+      'key': key,
+      'value': base64Value,
+    });
+  }
+
+  @override
+  Future<String?> retrieveString(String key) async {
+    return await methodChannel.invokeMethod<String>('retrieveString', {
+      'key': key,
+    });
+  }
+
+  @override
+  Future<String?> retrieveBytes(String key) async {
+    return await methodChannel.invokeMethod<String>('retrieveBytes', {
+      'key': key,
+    });
+  }
+
+  @override
+  Future<Map<String, String>> retrieveAll() async {
+    final result = await methodChannel.invokeMethod<String>('retrieveAll');
+    if (result == null) return {};
+    final decoded = Map<String, dynamic>.from(json.decode(result));
+    return decoded.map((k, v) => MapEntry(k, v.toString()));
+  }
+
+  @override
+  Future<void> delete(String key) async {
+    await methodChannel.invokeMethod('delete', {
+      'key': key,
+    });
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    await methodChannel.invokeMethod('deleteAll');
   }
 }
