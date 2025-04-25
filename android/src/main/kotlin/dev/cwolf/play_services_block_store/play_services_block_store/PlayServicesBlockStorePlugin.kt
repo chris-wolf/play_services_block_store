@@ -16,6 +16,7 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
   private lateinit var channel: MethodChannel
   private lateinit var context: Context
   private lateinit var client: BlockstoreClient
+  val chunkSize = 4000 // max bytes allowed to stored per key via block store so need to split it up if it is larger
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "play_services_block_store")
@@ -61,18 +62,120 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
     }
 
   private fun saveData(key: String, data: ByteArray, result: Result) {
-    val request = StoreBytesData.Builder()
-      .setKey(key)
-      .setBytes(data)
-      .build()
+    if (data.size <= chunkSize) {
+      val request = StoreBytesData.Builder()
+        .setKey(key)
+        .setBytes(data)
+        .build()
 
-    client.storeBytes(request)
-      .addOnSuccessListener {
-        result.success("Stored ${data.size} bytes for key: $key")
+      client.storeBytes(request)
+        .addOnSuccessListener {
+          result.success("Stored ${data.size} bytes for key: $key")
+        }
+        .addOnFailureListener { e ->
+          result.error("STORE_ERROR", e.message, e)
+        }
+    } else {
+      val totalChunks = (data.size + chunkSize - 1) / chunkSize
+      var storedChunks = 0
+
+      for (i in 0 until totalChunks) {
+        val start = i * chunkSize
+        val end = minOf(start + chunkSize, data.size)
+        val chunk = data.copyOfRange(start, end)
+        val chunkKey = if (i == 0) key else "${key}_part_$i"
+
+        val request = StoreBytesData.Builder()
+          .setKey(chunkKey)
+          .setBytes(chunk)
+          .build()
+
+        client.storeBytes(request)
+          .addOnSuccessListener {
+            storedChunks++
+            if (storedChunks == totalChunks) {
+              result.success("Stored ${data.size} bytes in $totalChunks chunks for key: $key")
+            }
+          }
+          .addOnFailureListener { e ->
+            result.error("STORE_ERROR", e.message, e)
+          }
+      }
+    }
+  }
+
+  private fun retrieveBytes(call: MethodCall, result: Result) {
+    val key = call.argument<String>("key")
+    if (key == null) {
+      result.error("INVALID_ARGS", "Missing key", null)
+      return
+    }
+
+    val request = RetrieveBytesRequest.Builder().setKeys(listOf(key)).build()
+
+    client.retrieveBytes(request)
+      .addOnSuccessListener { response ->
+        val firstChunk = response.blockstoreDataMap[key]?.bytes
+
+        if (firstChunk == null) {
+          result.success(null)
+          return@addOnSuccessListener
+        }
+
+        // If first chunk is less than chunkSize, it's the full data
+        if (firstChunk.size < chunkSize) {
+          result.success(firstChunk)
+          return@addOnSuccessListener
+        }
+
+        // Else, load more chunks
+        val chunks = mutableListOf<ByteArray>()
+        chunks.add(firstChunk)
+
+        var partIndex = 1
+
+        fun loadNextChunk() {
+          val partKey = "${key}_part_$partIndex"
+          val partRequest = RetrieveBytesRequest.Builder().setKeys(listOf(partKey)).build()
+
+          client.retrieveBytes(partRequest)
+            .addOnSuccessListener { partResponse ->
+              val partChunk = partResponse.blockstoreDataMap[partKey]?.bytes
+              if (partChunk != null) {
+                chunks.add(partChunk)
+                if (partChunk.size == chunkSize) {
+                  partIndex++
+                  loadNextChunk() // Continue loading
+                } else {
+                  // Last chunk found
+                  result.success(concatenateChunks(chunks))
+                }
+              } else {
+                // No more chunks
+                result.success(concatenateChunks(chunks))
+              }
+            }
+            .addOnFailureListener { e ->
+              result.error("RETRIEVE_BYTES_ERROR", e.message, e)
+            }
+        }
+
+        loadNextChunk()
       }
       .addOnFailureListener { e ->
-        result.error("STORE_ERROR", e.message, e)
+        result.error("RETRIEVE_BYTES_ERROR", e.message, e)
       }
+  }
+
+  private fun concatenateChunks(chunks: List<ByteArray>): ByteArray {
+    val totalSize = chunks.sumOf { it.size }
+    val result = ByteArray(totalSize)
+    var offset = 0
+    for (chunk in chunks) {
+      chunk.copyInto(result, offset)
+      offset += chunk.size
+    }
+    return result
   }
 
 
@@ -92,24 +195,6 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
       }
       .addOnFailureListener { e ->
         result.error("RETRIEVE_STRING_ERROR", e.message, e)
-      }
-  }
-
-  private fun retrieveBytes(call: MethodCall, result: Result) {
-    val key = call.argument<String>("key")
-    if (key == null) {
-      result.error("INVALID_ARGS", "Missing key", null)
-      return
-    }
-    val request = RetrieveBytesRequest.Builder().setKeys(listOf(key)).build()
-
-    client.retrieveBytes(request)
-      .addOnSuccessListener { response ->
-        val data = response.blockstoreDataMap[key]?.bytes
-        result.success(data)
-      }
-      .addOnFailureListener { e ->
-        result.error("RETRIEVE_BYTES_ERROR", e.message, e)
       }
   }
 

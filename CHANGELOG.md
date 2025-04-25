@@ -1,3 +1,7 @@
+# 0.4.0
+
+* Data is now automatically split into chunks when reaching the 4000 byte limit per value
+
 ## 0.3.0
 
 * Saved byte data as bytes and not as base64encoded to be more space efficient
