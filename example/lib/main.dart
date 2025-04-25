@@ -21,7 +21,6 @@ class _MyAppState extends State<MyApp> {
   String _status = '';
   String _retrievedString = '';
   String _retrievedBytes = '';
-  String _platformVersion = 'Unknown';
 
   @override
   void initState() {
