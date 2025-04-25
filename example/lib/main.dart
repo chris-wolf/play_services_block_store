@@ -101,7 +101,7 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(onPressed: _retrieveBytes, child: const Text('Retrieve Bytes')),
                 ]
               ),
-                  Text('Retrieved Base64 Bytes: ${utf8.decode(_retrievedBytes)}'),
+                  Text('Retrieved Bytes as UTF-8 String: ${utf8.decode(_retrievedBytes)}'),
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: _deleteAll,

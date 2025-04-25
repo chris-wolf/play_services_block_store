@@ -9,23 +9,15 @@ class PlayServicesBlockStore {
   }
 
   static Future<void> saveBytes(String key, Uint8List bytes) {
-    return PlayServicesBlockStorePlatform.instance.saveString(key, base64Encode(bytes as List<int>));
+    return PlayServicesBlockStorePlatform.instance.saveBytes(key, bytes);
   }
 
   static Future<String?> retrieveString(String key) {
     return PlayServicesBlockStorePlatform.instance.retrieveString(key);
   }
 
-  static Future<Uint8List?> retrieveBytes(String key) async {
-   final base64String = await PlayServicesBlockStorePlatform.instance.retrieveBytes(key);
-   if (base64String == null) {
-     return null;
-   }
-    return base64Decode(base64String);
-  }
-
-  static Future<Map<String, String>> retrieveAll() {
-    return PlayServicesBlockStorePlatform.instance.retrieveAll();
+  static Future<Uint8List?> retrieveBytes(String key) {
+   return PlayServicesBlockStorePlatform.instance.retrieveBytes(key);
   }
 
   static Future<void> delete(String key) {

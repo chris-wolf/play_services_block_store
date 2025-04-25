@@ -1,7 +1,6 @@
 package dev.cwolf.play_services_block_store.play_services_block_store
 
 import android.content.Context
-import android.util.Base64
 import androidx.annotation.NonNull
 import com.google.android.gms.auth.blockstore.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -31,7 +30,6 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
       "saveBytes" -> saveBytes(call, result)
       "retrieveString" -> retrieveString(call, result)
       "retrieveBytes" -> retrieveBytes(call, result)
-      "retrieveAll" -> retrieveAll(call, result)
       "delete" -> delete(call, result)
       "deleteAll" -> deleteAll(call, result)
       else -> result.notImplemented()
@@ -108,25 +106,10 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
     client.retrieveBytes(request)
       .addOnSuccessListener { response ->
         val data = response.blockstoreDataMap[key]?.bytes
-        val base64 = data?.let { Base64.encodeToString(it, Base64.NO_WRAP) }
-        result.success(base64)
+        result.success(data)
       }
       .addOnFailureListener { e ->
         result.error("RETRIEVE_BYTES_ERROR", e.message, e)
-      }
-  }
-
-  private fun retrieveAll(call: MethodCall, result: Result) {
-    val request = RetrieveBytesRequest.Builder().setRetrieveAll(true).build()
-    client.retrieveBytes(request)
-      .addOnSuccessListener { response ->
-        val resultMap = response.blockstoreDataMap.mapValues { (_, v) ->
-          Base64.encodeToString(v.bytes, Base64.NO_WRAP)
-        }
-        result.success(JSONObject(resultMap).toString())
-      }
-      .addOnFailureListener { e ->
-        result.error("RETRIEVE_ALL_ERROR", e.message, e)
       }
   }
 

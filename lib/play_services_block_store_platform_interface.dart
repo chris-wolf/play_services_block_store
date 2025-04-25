@@ -25,11 +25,11 @@ abstract class PlayServicesBlockStorePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> saveString(String key, String value) {
+   Future<void> saveString(String key, String value) {
     throw UnimplementedError('saveString() has not been implemented.');
   }
 
-  static Future<void> saveBytes(String key, Uint8List bytes) {
+  Future<void> saveBytes(String key, Uint8List bytes) {
     throw UnimplementedError('saveBytes() has not been implemented.');
   }
 
@@ -37,12 +37,8 @@ abstract class PlayServicesBlockStorePlatform extends PlatformInterface {
     throw UnimplementedError('retrieveString() has not been implemented.');
   }
 
-  Future<String?> retrieveBytes(String key) {
+  Future<Uint8List?> retrieveBytes(String key) {
     throw UnimplementedError('retrieveBytes() has not been implemented.');
-  }
-
-  Future<Map<String, String>> retrieveAll() {
-    throw UnimplementedError('retrieveAll() has not been implemented.');
   }
 
   Future<void> delete(String key) {

@@ -34,18 +34,10 @@ class MethodChannelPlayServicesBlockStore extends PlayServicesBlockStorePlatform
   }
 
   @override
-  Future<String?> retrieveBytes(String key) async {
-    return await methodChannel.invokeMethod<String>('retrieveBytes', {
+  Future<Uint8List?> retrieveBytes(String key) async {
+    return await methodChannel.invokeMethod<Uint8List>('retrieveBytes', {
       'key': key,
     });
-  }
-
-  @override
-  Future<Map<String, String>> retrieveAll() async {
-    final result = await methodChannel.invokeMethod<String>('retrieveAll');
-    if (result == null) return {};
-    final decoded = Map<String, dynamic>.from(json.decode(result));
-    return decoded.map((k, v) => MapEntry(k, v.toString()));
   }
 
   @override

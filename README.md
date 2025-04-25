@@ -9,7 +9,7 @@ A Flutter plugin for accessing the [Google Play Services Block Store API](https:
 ## Features
 
 - 🔐 Save and retrieve key-value pairs securely.
-- 💾 Support for storing both strings and byte arrays (as base64).
+- 💾 Support for storing both strings and byte arrays.
 - 🔍 Retrieve a single item or all stored items.
 - 🗑️ Delete individual keys or clear all stored data.
 - 🧩 Easy-to-use Flutter API.
@@ -46,15 +46,12 @@ await PlayServicesBlockStore.saveString('username', 'alice');
 // Retrieve a string
 final username = await PlayServicesBlockStore.retrieveString('username');
 
-// Save base64-encoded bytes
-final base64Data = base64Encode([1, 2, 3, 4]);
-await PlayServicesBlockStore.saveBytes('my_bytes', base64Data);
+// Save bytes
+final byteData =  Uint8List.fromList([1, 2, 3, 4]);
+await PlayServicesBlockStore.saveBytes('my_bytes', byteData);
 
-// Retrieve base64-encoded bytes
-final encoded = await PlayServicesBlockStore.retrieveBytes('my_bytes');
-
-// Retrieve all stored values
-final allData = await PlayServicesBlockStore.retrieveAll();
+// Retrieve bytes
+final byteData = await PlayServicesBlockStore.retrieveBytes('my_bytes');
 
 // Delete a single key
 await PlayServicesBlockStore.delete('username');
