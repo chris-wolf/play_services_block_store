@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _saveBytes() async {
-    final bytes = Uint8List.fromList(utf8.encode('Hello as bytes'));
+    final bytes = Uint8List.fromList(utf8.encode('Hello saved as bytes'));
     await PlayServicesBlockStore.saveBytes('byteKey', bytes);
     setState(() {
       _status = 'Bytes saved';
