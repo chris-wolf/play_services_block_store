@@ -10,7 +10,7 @@ A Flutter plugin for accessing the [Google Play Services Block Store API](https:
 
 - 🔐 Save and retrieve key-value pairs securely.
 - 💾 Support for storing both strings and byte arrays.
-- 🔍 Retrieve a single item or all stored items.
+- 🔍 Retrieve a single item.
 - 🗑️ Delete individual keys or clear all stored data.
 - 🧩 Easy-to-use Flutter API.
 
@@ -24,7 +24,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  play_services_block_store: ^0.5.0
+  play_services_block_store: ^0.6.0
 ```
 
 Then run:

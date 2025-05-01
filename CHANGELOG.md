@@ -1,3 +1,7 @@
+## 0.6.0
+
+* small readme fix.
+
 ## 0.5.0
 
 * saveString/saveByte methods now return false if play services not available.
