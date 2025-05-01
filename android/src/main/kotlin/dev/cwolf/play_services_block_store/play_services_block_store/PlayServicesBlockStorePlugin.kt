@@ -45,7 +45,7 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
     val key = call.argument<String>("key")
     val value = call.argument<String>("value")
     if (key == null || value == null) {
-      result.error("INVALID_ARGS", "Missing key or value", null)
+      result.success(false)
       return
     }
     saveData(key, value.toByteArray(), result)
@@ -55,7 +55,7 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
         val key = call.argument<String>("key")
         val byteValue = call.argument<ByteArray>("value") // Now directly a byte array from Uint8List
         if (key == null || byteValue == null) {
-            result.error("INVALID_ARGS", "Missing key or byte value", null)
+            result.success(null)
             return
         }
         saveData(key, byteValue, result)
@@ -70,10 +70,10 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
 
       client.storeBytes(request)
         .addOnSuccessListener {
-          result.success("Stored ${data.size} bytes for key: $key")
+          result.success(true)
         }
         .addOnFailureListener { e ->
-          result.error("STORE_ERROR", e.message, e)
+          result.success(false)
         }
     } else {
       val totalChunks = (data.size + chunkSize - 1) / chunkSize
@@ -94,11 +94,11 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
           .addOnSuccessListener {
             storedChunks++
             if (storedChunks == totalChunks) {
-              result.success("Stored ${data.size} bytes in $totalChunks chunks for key: $key")
+              result.success(true)
             }
           }
           .addOnFailureListener { e ->
-            result.error("STORE_ERROR", e.message, e)
+            result.success(false)
           }
       }
     }
@@ -107,7 +107,7 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
   private fun retrieveBytes(call: MethodCall, result: Result) {
     val key = call.argument<String>("key")
     if (key == null) {
-      result.error("INVALID_ARGS", "Missing key", null)
+      result.success(null)
       return
     }
 
@@ -156,14 +156,14 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
               }
             }
             .addOnFailureListener { e ->
-              result.error("RETRIEVE_BYTES_ERROR", e.message, e)
+              result.success(null)
             }
         }
 
         loadNextChunk()
       }
       .addOnFailureListener { e ->
-        result.error("RETRIEVE_BYTES_ERROR", e.message, e)
+        result.success(null)
       }
   }
 
@@ -182,7 +182,7 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
   private fun retrieveString(call: MethodCall, result: Result) {
     val key = call.argument<String>("key")
     if (key == null) {
-      result.error("INVALID_ARGS", "Missing key", null)
+      result.success(null)
       return
     }
     val request = RetrieveBytesRequest.Builder().setKeys(listOf(key)).build()
@@ -194,14 +194,14 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
         result.success(stringValue)
       }
       .addOnFailureListener { e ->
-        result.error("RETRIEVE_STRING_ERROR", e.message, e)
+        result.success(null)
       }
   }
 
   private fun delete(call: MethodCall, result: Result) {
     val key = call.argument<String>("key")
     if (key == null) {
-      result.error("INVALID_ARGS", "Missing key", null)
+      result.success(false)
       return
     }
     val request = DeleteBytesRequest.Builder().setKeys(listOf(key)).build()

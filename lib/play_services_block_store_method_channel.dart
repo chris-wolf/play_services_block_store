@@ -10,19 +10,19 @@ class MethodChannelPlayServicesBlockStore extends PlayServicesBlockStorePlatform
   final methodChannel = const MethodChannel('play_services_block_store');
 
   @override
-  Future<void> saveString(String key, String value) async {
-    await methodChannel.invokeMethod('saveString', {
+  Future<bool> saveString(String key, String value) async {
+    return (await methodChannel.invokeMethod('saveString', {
       'key': key,
       'value': value,
-    });
+    })) as bool? ?? false;
   }
 
   @override
-  Future<void> saveBytes(String key, Uint8List data) async {
-    await methodChannel.invokeMethod('saveBytes', {
+  Future<bool> saveBytes(String key, Uint8List data) async {
+    return (await methodChannel.invokeMethod('saveBytes', {
       'key': key,
       'value': data,
-    });
+    })) as bool? ?? false;
   }
 
   @override

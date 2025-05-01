@@ -3,11 +3,11 @@ import 'dart:typed_data';
 import 'play_services_block_store_platform_interface.dart';
 
 class PlayServicesBlockStore {
-  static Future<void> saveString(String key, String value) {
+  static Future<bool> saveString(String key, String value) {
     return PlayServicesBlockStorePlatform.instance.saveString(key, value);
   }
 
-  static Future<void> saveBytes(String key, Uint8List bytes) {
+  static Future<bool> saveBytes(String key, Uint8List bytes) {
     return PlayServicesBlockStorePlatform.instance.saveBytes(key, bytes);
   }
 

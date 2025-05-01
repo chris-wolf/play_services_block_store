@@ -25,11 +25,11 @@ abstract class PlayServicesBlockStorePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-   Future<void> saveString(String key, String value) {
+   Future<bool> saveString(String key, String value) {
     throw UnimplementedError('saveString() has not been implemented.');
   }
 
-  Future<void> saveBytes(String key, Uint8List bytes) {
+  Future<bool> saveBytes(String key, Uint8List bytes) {
     throw UnimplementedError('saveBytes() has not been implemented.');
   }
 

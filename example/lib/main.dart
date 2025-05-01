@@ -27,9 +27,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _saveString() async {
-    await PlayServicesBlockStore.saveString('exampleKey', 'Hello saved as String');
+    final success = await PlayServicesBlockStore.saveString('exampleKey', 'Hello saved as String');
     setState(() {
-      _status = 'String saved';
+      _status = 'String saved: $success';
     });
   }
 
@@ -43,9 +43,9 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _saveBytes() async {
     final bytes = Uint8List.fromList(utf8.encode('Hello saved as bytes'));
-    await PlayServicesBlockStore.saveBytes('byteKey', bytes);
+    final success = await PlayServicesBlockStore.saveBytes('byteKey', bytes);
     setState(() {
-      _status = 'Bytes saved';
+      _status = 'Bytes saved: $success';
     });
   }
 

@@ -1,4 +1,8 @@
-# 0.4.0
+## 0.5.0
+
+* saveString/saveByte methods now return false if play services not available.
+
+## 0.4.0
 
 * Data is now automatically split into chunks when reaching the 4000 byte limit per value
 

@@ -24,7 +24,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  play_services_block_store: ^0.3.0
+  play_services_block_store: ^0.5.0
 ```
 
 Then run:
