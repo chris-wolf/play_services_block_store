@@ -1,6 +1,6 @@
 name: play_services_block_store
 description: "The Block Store API allows your app to store data that it can later retrieve to re-authenticate users on a new device."
-version: 0.6.0
+version: 0.7.0
 repository: https://github.com/chris-wolf/play_services_block_store
 
 environment:

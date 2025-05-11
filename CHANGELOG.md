@@ -1,3 +1,7 @@
+## 0.7.0
+
+* adjustment for chunk logic
+ 
 ## 0.6.0
 
 * small readme fix.
