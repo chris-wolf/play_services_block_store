@@ -1,3 +1,7 @@
+## 0.8.0
+
+* set shouldBackupToCloud to true when E2E encryption is active (e.g. if user has lockscreen active)
+
 ## 0.7.0
 
 * adjustment for chunk logic

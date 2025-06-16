@@ -73,12 +73,19 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
 
     private fun saveData(key: String, data: ByteArray, result: Result) {
         if (data.size <= chunkSize) {
-            val request = StoreBytesData.Builder().setKey(key).setBytes(data).build()
+            client.isEndToEndEncryptionAvailable().addOnSuccessListener { isE2E ->
+                val builder = StoreBytesData.Builder()
+                    .setKey(key)
+                    .setBytes(data)
 
-            client.storeBytes(request).addOnSuccessListener {
-                result.success(true)
-            }.addOnFailureListener { e ->
-                result.success(false)
+                if (isE2E) {
+                    builder.setShouldBackupToCloud(true)
+                }
+
+                val request = builder.build()
+                client.storeBytes(request)
+                    .addOnSuccessListener { result.success(true) }
+                    .addOnFailureListener { result.success(false) }
             }
         } else {
             val totalChunks = (data.size + chunkSize - 1) / chunkSize
@@ -95,10 +102,21 @@ class PlayServicesBlockStorePlugin : FlutterPlugin, MethodCallHandler {
                 val end = minOf(start + chunkSize, data.size)
                 val chunk = data.copyOfRange(start, end)
                 val chunkKey = if (index == 0) key else "${key}_part_$index"
-                val request = StoreBytesData.Builder().setKey(chunkKey).setBytes(chunk).build()
+                client.isEndToEndEncryptionAvailable().addOnSuccessListener { isE2E ->
+                    val builder = StoreBytesData.Builder()
+                        .setKey(chunkKey)
+                        .setBytes(chunk)
 
-                client.storeBytes(request).addOnSuccessListener { storeNextChunk(index + 1) }
-                    .addOnFailureListener { result.success(false) }
+                    if (isE2E) {
+                        builder.setShouldBackupToCloud(true)
+                    }
+
+                    val request = builder.build()
+
+                    client.storeBytes(request)
+                        .addOnSuccessListener { storeNextChunk(index + 1) }
+                        .addOnFailureListener { result.success(false) }
+                }
             }
             storeNextChunk(0)
         }
